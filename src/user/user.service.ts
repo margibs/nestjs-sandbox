@@ -25,7 +25,7 @@ export class UserService {
     return this.users.find((user) => user.id === id);
   }
   create(createUserDto: CreateUserDto) {
-    const id = this.users.sort((a, b) => b.id - a.id)[0].id + 1;
+    const id = [...this.users].sort((a, b) => b.id - a.id)[0].id + 1;
     const newUser = { id, ...createUserDto };
     this.users.push(newUser);
     return newUser;
