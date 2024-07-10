@@ -1,54 +1,50 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Repository } from 'typeorm';
+import { User } from 'src/entities/user.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
-  private users = [
-    {
-      id: 1,
-      name: 'John',
-      role: 'ADMIN',
-    },
-    {
-      id: 2,
-      name: 'Jane',
-      role: 'ADMIN',
-    },
-  ];
+  constructor(
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
+  ) {}
 
-  findAll() {
-    return this.users;
+  async findAll() {
+    return await this.usersRepository.find();
   }
 
-  findOne(id: number) {
-    const user = this.users.find((user) => user.id === id);
+  async findOne(id: number) {
+    const user = await this.usersRepository.findOne({ where: { id } });
 
     if (!user) throw new NotFoundException('User not found');
 
     return user;
   }
-  create(createUserDto: CreateUserDto) {
-    const id = [...this.users].sort((a, b) => b.id - a.id)[0].id + 1;
-    const newUser = { id, ...createUserDto };
-    this.users.push(newUser);
-    return newUser;
-  }
+  async create(createUserDto: CreateUserDto) {
+    const { password, ...userData } = createUserDto;
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    this.users = this.users.map((user) => {
-      if (user.id === id) {
-        return { ...user, ...updateUserDto };
-      }
-      return user;
+    const user = await this.usersRepository.create({
+      ...userData,
+      password: hashedPassword,
     });
+    await this.usersRepository.save(user);
 
-    return this.findOne(id);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password: omit, ...result } = user;
+    return result;
   }
 
-  remove(id: number) {
-    const user = this.findOne(id);
-    this.users = this.users.filter((user) => user.id !== id);
-    return user;
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    await this.usersRepository.update(id, updateUserDto);
+    return await this.usersRepository.findOne({ where: { id } });
+  }
+
+  async remove(id: number) {
+    return await this.usersRepository.delete(id);
   }
 }
