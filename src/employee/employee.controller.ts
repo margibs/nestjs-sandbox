@@ -8,6 +8,7 @@ import {
   Delete,
   ParseIntPipe,
   Query,
+  ValidationPipe,
 } from '@nestjs/common';
 import { EmployeeService } from './employee.service';
 import { Prisma } from '@prisma/client';
@@ -17,7 +18,7 @@ export class EmployeeController {
   constructor(private readonly employeeService: EmployeeService) {}
 
   @Post()
-  create(@Body() createEmployeeDto: Prisma.EmployeeCreateInput) {
+  create(@Body(ValidationPipe) createEmployeeDto: Prisma.EmployeeCreateInput) {
     return this.employeeService.create(createEmployeeDto);
   }
 
