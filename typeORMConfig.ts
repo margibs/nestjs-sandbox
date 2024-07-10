@@ -1,4 +1,4 @@
-import { User } from 'src/entitites/user.entity';
+import { User } from 'src/entities/user.entity';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 import * as dotenv from 'dotenv';
 dotenv.config();
