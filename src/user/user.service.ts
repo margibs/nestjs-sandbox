@@ -24,6 +24,16 @@ export class UserService {
 
     return user;
   }
+
+  async findOneByUsername(username: string) {
+    const user = await this.usersRepository.findOne({
+      where: { email: username },
+    });
+    if (!user) throw new NotFoundException('User not found');
+
+    return user;
+  }
+
   async create(createUserDto: CreateUserDto) {
     const { password, ...userData } = createUserDto;
     const hashedPassword = await bcrypt.hash(password, 10);
