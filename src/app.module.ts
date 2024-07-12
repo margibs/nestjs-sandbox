@@ -8,7 +8,7 @@ import config from 'typeORMConfig';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(config),
+    TypeOrmModule.forRootAsync(config),
     ConfigModule.forRoot({
       isGlobal: true,
     }),

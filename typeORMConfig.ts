@@ -1,25 +1,27 @@
 import { User, Comment, Topic } from 'src/entities';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
+import { ConfigService } from '@nestjs/config';
 
-// TODO: Check if this is best practice
-import * as dotenv from 'dotenv';
-dotenv.config();
-
-const config: PostgresConnectionOptions = {
-  type: 'postgres',
-  host: process.env.POSTGRES_HOST,
-  port: 5432,
-  username: process.env.POSTGRES_USER,
-  password: process.env.POSTGRES_PASSWORD,
-  database: process.env.POSTGRES_DATABASE,
-  entities: [User, Topic, Comment],
-  synchronize: true,
-  ssl: true,
-  extra: {
-    ssl: {
-      rejectUnauthorized: false,
-    },
+const config = {
+  useFactory: (configService: ConfigService): PostgresConnectionOptions => {
+    return {
+      type: 'postgres',
+      host: configService.get('POSTGRES_HOST'),
+      port: 5432,
+      username: configService.get('POSTGRES_USER'),
+      password: configService.get('POSTGRES_PASSWORD'),
+      database: configService.get('POSTGRES_DATABASE'),
+      entities: [User, Topic, Comment],
+      synchronize: true,
+      ssl: true,
+      extra: {
+        ssl: {
+          rejectUnauthorized: false,
+        },
+      },
+    };
   },
+  inject: [ConfigService],
 };
 
 export default config;
