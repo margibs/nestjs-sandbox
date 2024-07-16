@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { Comment, Post } from 'src/entities';
 import * as bcrypt from 'bcrypt';
+import { Exclude } from 'class-transformer';
 
 export enum UserRole {
   ADMIN = 'admin',
@@ -26,6 +27,7 @@ export class User {
   email: string;
 
   @Column({ nullable: false })
+  @Exclude()
   password: string;
 
   @Column({

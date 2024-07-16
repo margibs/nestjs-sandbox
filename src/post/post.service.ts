@@ -15,10 +15,12 @@ export class PostService {
   ) {}
 
   async create(createPostDto: CreatePostDto, currUser: User) {
-    const { title, content } = createPostDto;
-    const post = this.postRepository.create({ title, content, user: currUser });
-    await this.postRepository.save(post);
-    return 'Added Post Successfully.';
+    const post = this.postRepository.create({
+      ...createPostDto,
+      user: currUser,
+    });
+
+    return await this.postRepository.save(post);
   }
 
   async findAll() {
@@ -26,7 +28,10 @@ export class PostService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} post`;
+    return this.postRepository.findOne({
+      relations: ['comments', 'user'],
+      where: { id },
+    });
   }
 
   update(id: number, updatePostDto: UpdatePostDto) {

@@ -7,6 +7,8 @@ import {
   Param,
   Delete,
   UseGuards,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -22,7 +24,6 @@ export class PostController {
 
   @Post()
   create(@Body() createPostDto: CreatePostDto, @CurrentUser() currUser: User) {
-    console.debug(createPostDto, currUser);
     return this.postService.create(createPostDto, currUser);
   }
 
@@ -31,6 +32,7 @@ export class PostController {
     return this.postService.findAll();
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.postService.findOne(+id);
