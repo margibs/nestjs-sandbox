@@ -1,4 +1,4 @@
-import { User, Comment, Topic } from 'src/entities';
+import { User, Comment, Post } from 'src/entities';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 import { ConfigService } from '@nestjs/config';
 
@@ -11,7 +11,7 @@ const config = {
       username: configService.get('POSTGRES_USER'),
       password: configService.get('POSTGRES_PASSWORD'),
       database: configService.get('POSTGRES_DATABASE'),
-      entities: [User, Topic, Comment],
+      entities: [User, Post, Comment],
       synchronize: true,
       ssl: true,
       extra: {
