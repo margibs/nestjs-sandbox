@@ -5,7 +5,7 @@ import {
   BeforeInsert,
   OneToMany,
 } from 'typeorm';
-import { Comment } from 'src/entities';
+import { Comment, Post } from 'src/entities';
 import * as bcrypt from 'bcrypt';
 
 export enum UserRole {
@@ -37,6 +37,9 @@ export class User {
 
   @OneToMany(() => Comment, (comment) => comment.user)
   comments: Comment[];
+
+  @OneToMany(() => Post, (post) => post.user)
+  posts: Post[];
 
   @BeforeInsert()
   async hashPassword() {

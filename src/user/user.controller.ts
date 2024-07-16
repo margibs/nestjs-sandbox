@@ -11,6 +11,8 @@ import {
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
+import { CurrentUser } from 'src/decorator/current-user.decorator';
+import { User } from 'src/entities';
 
 @UseGuards(JwtAuthGuard)
 @Controller('users')
@@ -18,7 +20,8 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  findAll() {
+  findAll(@CurrentUser() currUser: User) {
+    console.log({ currUser });
     return this.userService.findAll();
   }
 
